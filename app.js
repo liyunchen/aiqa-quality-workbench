@@ -30,7 +30,145 @@ function badge(t){let c=['待修复','方案中','待评分','试点中'].includ
 function head(k,t,sub,action=''){return `<div class="pagehead"><div><div class="eyebrow">${esc(k)}</div><h1>${esc(t)}</h1><p class="subtitle">${esc(sub)}</p></div>${action}</div>`}
 function metric(label,value,unit,foot,delta=''){return `<div class="metric"><div class="metric-top">${esc(label)}<span class="mini">◈</span></div><div class="value num">${esc(value)}<em>${esc(unit)}</em></div><div class="metric-foot">${delta?`<span class="delta">${esc(delta)}</span>`:''}${esc(foot)}</div></div>`}
 function tracks(){return `<div class="tracks">${content.tracks.map(x=>`<article class="track"><div class="track-top"><div class="track-symbol">${esc(x.symbol)}</div>${badge('进行中')}</div><h3>${esc(x.name)}</h3><p>${esc(x.description)}</p><div class="progress" aria-label="演示进度 ${Number(x.progress)||0}%"><b style="width:${Math.max(0,Math.min(100,Number(x.progress)||0))}%"></b></div><div class="track-meta"><span>${esc(x.count)}</span><span>${Number(x.progress)||0}%</span></div><div class="track-bottom"><span>${esc(x.focus)}</span><a href="#${esc(x.view)}"><strong>查看专项</strong></a></div></article>`).join('')}</div>`}
-function overview(){let weekly=period==='本周',values=weekly?content.overview.weekly:content.overview.monthly;let saved=values.savedHours;return head('QUALITY INTELLIGENCE',content.overview.heading,content.overview.subtitle,`<select aria-label="统计周期" id="period"><option ${!weekly?'selected':''}>本月</option><option ${weekly?'selected':''}>本周</option></select>`)+`<section class="hero"><div><div class="eyebrow">ONE GOAL · THREE WORKSTREAMS</div><h2>${esc(content.overview.heroHeading)}</h2><p>${esc(content.overview.heroDescription)}</p><span class="hero-tag">当前阶段 / 试点验证与流程接入</span></div><div class="hero-side"><strong>3 / 1</strong><small>三条工作线 · 一个质量闭环</small></div></section><div class="metrics">${metric('核心任务成功率',values.success,'%', '固定场景对照','较基线 +8.4个百分点')}${metric('净节省人时',saved,'小时','已扣除审核、返工与基建投入')}${metric('有效使用覆盖率',values.coverage,'%', '已验收使用 / 目标交付')}${metric('体验问题复发率',values.recurrence,'%', '同类问题','较基线 −4.1个百分点')}</div><div class="grid2"><section class="panel"><div class="panel-head"><div><h2>体验与人效，同步改善</h2><p>趋势为模拟数据，不代表实际经营结果</p></div><span class="chip">近6周</span></div><div class="chart"><div class="chart-axis"><span>100%</span><span>75%</span><span>50%</span><span>25%</span></div><div class="plot">${trendChart()}</div></div><div class="bottombar"><div class="legend"><span><i></i>核心任务成功率</span><span><i class="light"></i>有效使用覆盖率</span></div><button class="btn link" data-action="metric-help">查看口径</button></div></section><section class="panel"><div class="panel-head"><h2>最近动态</h2><span class="chip">演示记录</span></div>${activity('✓','登录态问题完成回归验证','产品体验 · EXP-104','10:42')}${activity('✧','接口契约检查已接入试运行','测试基建 · BIC公共能力','10:18')}${activity('◎',`${Object.keys(state.scores).length+12} 道评测题已完成专家评分`,'AI评测 · Navos核心场景','09:56')}${activity('◈',state.runs.length?'新增 '+state.runs.length+' 次本地模拟执行':'发射台用例生成进入试点','测试基建 · 采用效果待验证','09:30')}</section></div><div class="section-head"><h2>三条工作线，一个结果</h2><a class="btn link" href="#projects">查看全部专项</a></div>${tracks()}<div class="banner"><strong>本周关注</strong><span>固定专家评分窗口，确认试点验收责任，优先打通执行记录与效果反馈。</span></div><div class="panel"><div class="panel-head"><h2>高优体验问题</h2><a class="btn link" href="#issues">进入问题池</a></div>${issueTable(issueList().slice(1,4))}</div>`}
+function overview(){let weekly=period==='本周',values=weekly?content.overview.weekly:content.overview.monthly;let saved=values.savedHours;return head('QUALITY INTELLIGENCE',content.overview.heading,content.overview.subtitle,`<select aria-label="统计周期" id="period"><option ${!weekly?'selected':''}>本月</option><option ${weekly?'selected':''}>本周</option></select>`)+`${overviewHero()}<div class="metrics">${metric('核心任务成功率',values.success,'%', '固定场景对照','较基线 +8.4个百分点')}${metric('净节省人时',saved,'小时','已扣除审核、返工与基建投入')}${metric('有效使用覆盖率',values.coverage,'%', '已验收使用 / 目标交付')}${metric('体验问题复发率',values.recurrence,'%', '同类问题','较基线 −4.1个百分点')}</div><div class="grid2"><section class="panel"><div class="panel-head"><div><h2>体验与人效，同步改善</h2><p>趋势为模拟数据，不代表实际经营结果</p></div><span class="chip">近6周</span></div><div class="chart"><div class="chart-axis"><span>100%</span><span>75%</span><span>50%</span><span>25%</span></div><div class="plot">${trendChart()}</div></div><div class="bottombar"><div class="legend"><span><i></i>核心任务成功率</span><span><i class="light"></i>有效使用覆盖率</span></div><button class="btn link" data-action="metric-help">查看口径</button></div></section><section class="panel"><div class="panel-head"><h2>最近动态</h2><span class="chip">演示记录</span></div>${activity('✓','登录态问题完成回归验证','产品体验 · EXP-104','10:42')}${activity('✧','接口契约检查已接入试运行','测试基建 · BIC公共能力','10:18')}${activity('◎',`${Object.keys(state.scores).length+12} 道评测题已完成专家评分`,'AI评测 · Navos核心场景','09:56')}${activity('◈',state.runs.length?'新增 '+state.runs.length+' 次本地模拟执行':'发射台用例生成进入试点','测试基建 · 采用效果待验证','09:30')}</section></div><div class="section-head"><h2>三条工作线，一个结果</h2><a class="btn link" href="#projects">查看全部专项</a></div>${tracks()}<div class="banner"><strong>本周关注</strong><span>固定专家评分窗口，确认试点验收责任，优先打通执行记录与效果反馈。</span></div><div class="panel"><div class="panel-head"><h2>高优体验问题</h2><a class="btn link" href="#issues">进入问题池</a></div>${issueTable(issueList().slice(1,4))}</div>`}
+function originalHero(){
+  return `<section class="hero"><div><div class="eyebrow">ONE GOAL · THREE WORKSTREAMS</div><h2>${esc(content.overview.heroHeading)}</h2><p>${esc(content.overview.heroDescription)}</p><span class="hero-tag">当前阶段 / 试点验证与流程接入</span></div><div class="hero-side"><strong>3 / 1</strong><small>三条工作线 · 一个质量闭环</small></div></section>`;
+}
+
+let carouselCleanup;
+function carouselSlides(){
+  const slides = content.carousel?.slides;
+  if (!Array.isArray(slides)) return [];
+  return slides.filter(slide => slide?.type === 'original' || (slide?.type === 'image'
+    && typeof slide.src === 'string' && /^data:image\/webp;base64,[A-Za-z0-9+/]+={0,2}$/.test(slide.src)));
+}
+
+function overviewHero(){
+  const slides = carouselSlides();
+  if (!slides.length || (slides.length === 1 && slides[0].type === 'original')) return originalHero();
+  const hasControls = slides.length > 1;
+  return `<section class="overview-carousel" aria-label="首页横幅"${hasControls ? ' aria-roledescription="轮播" tabindex="0"' : ''}>
+    <div class="overview-carousel-stage"></div>
+    ${hasControls ? `<div class="overview-carousel-controls">
+      <button class="carousel-step previous" type="button" data-step="-1" aria-label="上一张"><span aria-hidden="true">‹</span></button>
+      <div class="carousel-dots" role="group" aria-label="选择横幅">${slides.map((_, index) => `<button type="button" data-slide="${index}" aria-label="第 ${index + 1} 张"></button>`).join('')}</div>
+      <button class="carousel-step next" type="button" data-step="1" aria-label="下一张"><span aria-hidden="true">›</span></button>
+      <span class="carousel-count" aria-hidden="true"></span>
+      <button class="carousel-pause" type="button"></button>
+    </div><span class="carousel-announcement" role="status"></span>` : ''}
+  </section>`;
+}
+
+function mountOverviewCarousel(){
+  const root = $('.overview-carousel');
+  if (!root) return;
+  const slides = carouselSlides();
+  const stage = root.querySelector('.overview-carousel-stage');
+  const controls = root.querySelector('.overview-carousel-controls');
+  const dots = [...root.querySelectorAll('[data-slide]')];
+  const count = root.querySelector('.carousel-count');
+  const status = root.querySelector('.carousel-announcement');
+  const pause = root.querySelector('.carousel-pause');
+  const seconds = content.carousel?.seconds;
+  const duration = (Number.isInteger(seconds) && seconds >= 1 && seconds <= 60 ? seconds : 3) * 1000;
+  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  let paused = motion.matches;
+  let hovered = false;
+  let focused = false;
+  let index = 0;
+  let timer;
+  let touchStart;
+  const cards = slides.map((slide, position) => {
+    const card = document.createElement('div');
+    card.className = 'overview-carousel-slide';
+    card.hidden = true;
+    if (slide.type === 'original') card.innerHTML = originalHero();
+    else {
+      const image = new Image();
+      image.alt = slide.alt || `第 ${position + 1} 张横幅`;
+      image.decoding = 'async';
+      if (slide.fit === 'cover') image.className = 'cover';
+      image.addEventListener('error', () => { card.innerHTML = originalHero(); }, { once: true });
+      image.src = slide.src;
+      card.append(image);
+    }
+    stage.append(card);
+    return card;
+  });
+  function show(next, announce = false){
+    index = (next + slides.length) % slides.length;
+    cards.forEach((card, position) => { card.hidden = position !== index; });
+    dots.forEach((dot, position) => {
+      if (position === index) dot.setAttribute('aria-current', 'true');
+      else dot.removeAttribute('aria-current');
+    });
+    if (count) count.textContent = `${index + 1} / ${slides.length}`;
+    if (announce && status) status.textContent = `第 ${index + 1} 张，共 ${slides.length} 张`;
+  }
+  show(0);
+  if (!controls) return;
+  function schedule(){
+    clearTimeout(timer);
+    if (paused || hovered || focused || document.hidden) return;
+    timer = setTimeout(() => { show(index + 1); schedule(); }, duration);
+  }
+  function go(next){ show(next, true); schedule(); }
+  function updatePause(){
+    pause.textContent = paused ? '播放' : '暂停';
+    pause.setAttribute('aria-label', paused ? '播放轮播' : '暂停轮播');
+    schedule();
+  }
+  controls.addEventListener('click', event => {
+    const button = event.target.closest('button');
+    if (!button) return;
+    if (button === pause) {
+      paused = !paused;
+      if (!paused) focused = false;
+      updatePause();
+    }
+    else if (button.hasAttribute('data-step')) go(index + Number(button.dataset.step));
+    else if (button.hasAttribute('data-slide')) go(Number(button.dataset.slide));
+  });
+  root.addEventListener('pointerenter', event => {
+    if (event.pointerType === 'mouse') { hovered = true; schedule(); }
+  });
+  root.addEventListener('pointerleave', event => {
+    if (event.pointerType === 'mouse') { hovered = false; schedule(); }
+  });
+  root.addEventListener('focusin', event => {
+    focused = event.target.matches(':focus-visible');
+    schedule();
+  });
+  root.addEventListener('focusout', event => { if (!root.contains(event.relatedTarget)) { focused = false; schedule(); } });
+  root.addEventListener('keydown', event => {
+    if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+    event.preventDefault();
+    go(index + (event.key === 'ArrowLeft' ? -1 : 1));
+  });
+  stage.addEventListener('pointerdown', event => {
+    if (event.pointerType !== 'touch') return;
+    touchStart = { x: event.clientX, y: event.clientY, id: event.pointerId };
+    stage.setPointerCapture(event.pointerId);
+  });
+  stage.addEventListener('pointerup', event => {
+    if (touchStart?.id !== event.pointerId) return;
+    const x = event.clientX - touchStart.x;
+    const y = event.clientY - touchStart.y;
+    touchStart = undefined;
+    if (Math.abs(x) > 32 && Math.abs(x) > Math.abs(y) * 1.5) go(index + (x < 0 ? 1 : -1));
+  });
+  stage.addEventListener('pointercancel', () => { touchStart = undefined; });
+  function motionChanged(event){ paused = event.matches; updatePause(); }
+  motion.addEventListener('change', motionChanged);
+  document.addEventListener('visibilitychange', schedule);
+  carouselCleanup = () => {
+    clearTimeout(timer);
+    motion.removeEventListener('change', motionChanged);
+    document.removeEventListener('visibilitychange', schedule);
+  };
+  updatePause();
+}
+
 function trendChart(){
   const {success,coverage,labels}=content.overview.trend;
   const points=values=>values.map((value,i)=>[600*i/Math.max(1,values.length-1),170-1.6*Math.max(0,Math.min(100,value))]);
@@ -49,7 +187,7 @@ function issues(){const list=issueList().filter(i=>(issueFilter==='全部'||i.st
 let pipelineRunning=false,pipelineStep=0,pipelineLogs=[];
 function pipeline(){return head('DELIVERY PIPELINE',content.pipeline.title||'质量验证，融入每次交付。',content.pipeline.subtitle||'演示从代码提交到回归报告的执行链路。未连接真实CI/CD.',`<button id="run-pipeline" class="btn primary" data-action="run-pipeline" ${pipelineRunning?'disabled':''}>${pipelineRunning?'模拟执行中…':'运行演示流水线'}</button>`)+`<div class="grid2"><div class="panel"><div class="panel-head"><h2>Navos · 回归验证流水线</h2>${badge(pipelineRunning?'执行中':pipelineLogs.length&&pipelineStep===content.pipeline.steps.length?'已完成':'试运行')}</div><div class="check-list"><span>项目：${esc(content.pipeline.project)}</span><span>分支：${esc(content.pipeline.branch)}</span><span>模式：${esc(content.pipeline.mode)}</span></div><div class="pipeline"><div class="steps">${content.pipeline.steps.map((s,i)=>`<div class="step ${i<pipelineStep?'done':i===pipelineStep&&pipelineRunning?'running':''}"><i>${i<pipelineStep?'✓':i+1}</i>${esc(s)}</div>`).join('')}</div></div><div class="definition"><strong>自动化执行 ≠ 自动发布</strong><br>先观察稳定性和误报，再决定哪些检查可以阻断发布；关键质量判断保留责任人确认。</div></div><div class="panel"><h2>逐步接入</h2><div class="meta-row"><span>已验证自动化</span>接口 / UI / 回归</div><div class="meta-row"><span>按需评测</span>Agent效果 / 可靠性</div><div class="meta-row"><span>执行记录</span>关联需求、版本与缺陷</div><div class="meta-row"><span>异常处理</span>通知责任人、人工复核</div></div></div><div class="panel"><div class="panel-head"><h2>执行日志</h2><span class="chip">模拟任务 · 无真实代码执行</span></div><div class="log" role="log" aria-label="模拟流水线执行日志">${pipelineLogs.length?esc(pipelineLogs.join('\n')):'等待运行。点击“运行演示流水线”查看完整过程。'}</div></div>`}
 function plan(){return head('PRINCIPLES & ROADMAP','一个目标，一套持续改进机制。','评测发现差距，产品研发改进，基建固化验证，平台沉淀证据。')+`<div class="architecture"><div class="arch-goal">更好的产品体验 · 更低的总人力投入 · 质量可控</div><div class="arch-three"><div class="arch-node"><strong>AI评测</strong><small>明确标准 · 发现差距</small></div><div class="arch-node"><strong>AI测试基建</strong><small>整合资产 · 融入研发</small></div><div class="arch-node"><strong>体验改善</strong><small>推动落地 · 验证效果</small></div></div><div class="arch-connector" aria-hidden="true">↓ ↓ ↓</div><div class="arch-platform"><strong>AIQA平台</strong><p>专项进展 / 专家评测 / 能力与执行记录 / 问题闭环 / 指标看板</p></div><div class="arch-base"><div>研发交付流程<br><small>需求 · AI辅助编码 · 自动化 · CI/CD</small></div><div>数据与反馈<br><small>版本 · 评分 · 采用 · 缺陷 · 线上表现</small></div></div></div><div class="section-head"><h2>分阶段验证，再扩大投入</h2><span>资源到位后建议节奏</span></div><div class="roadmap">${content.roadmap.map(p=>`<article class="phase"><div class="week">${esc(p.week)}</div><h3>${esc(p.title)}</h3><ul>${p.tasks.map(t=>`<li>${esc(t)}</li>`).join('')}</ul><div class="accept">验收：${esc(p.acceptance)}</div></article>`).join('')}</div><div class="grid2" style="margin-top:24px"><div class="panel"><h2>需要的支持</h2><div class="meta-row"><span>技术与资源</span>技术负责人及MAC / BIC / 测试投入</div><div class="meta-row"><span>业务线承接</span>真实任务、使用与验收责任</div><div class="meta-row"><span>专家与研发</span>固定评分窗口及高优需求排期</div><div class="meta-row"><span>平台与系统</span>开发维护资源及必要接入权限</div></div><div class="panel"><h2>价值核算</h2><p class="definition" style="margin-top:16px">净节省人时 = 同等交付原方式人时 − 业务线实际投入 − 公共基建投入。<br><br>审核、返工和维护均纳入；质量达标才认定有效收益。释放产能与实际成本下降分开统计。</p><button class="btn small" style="margin-top:15px" data-action="metric-help">查看指标口径</button></div></div>`}
-function render(){view=location.hash.slice(1)||'overview';if(!navIds.includes(view))view='overview';const navLabel=i=>content.copy.nav[i]??DEFAULT_CONTENT.copy.nav[i];$('#nav').innerHTML=navIds.map((id,i)=>`<a href="#${id}" ${view===id?'class="active" aria-current="page"':''}><svg viewBox="0 0 24 24" aria-hidden="true">${icons[id]}</svg>${esc(navLabel(i))}${id==='issues'?'<span class="navcount">'+issueList().filter(i=>i.status!=='已验证').length+'</span>':''}</a>`).join('');$('#breadcrumb').textContent=navLabel(navIds.indexOf(view));document.title=content.copy.title;$('meta[name="description"]')?.setAttribute('content',content.copy.description);if($('#site-footer'))$('#site-footer').textContent=content.copy.footer;$('#main').innerHTML=({overview,projects,evaluation,skills:skillsPage,issues,pipeline,plan}[view])();}
+function render(){view=location.hash.slice(1)||'overview';if(!navIds.includes(view))view='overview';const navLabel=i=>content.copy.nav[i]??DEFAULT_CONTENT.copy.nav[i];$('#nav').innerHTML=navIds.map((id,i)=>`<a href="#${id}" ${view===id?'class="active" aria-current="page"':''}><svg viewBox="0 0 24 24" aria-hidden="true">${icons[id]}</svg>${esc(navLabel(i))}${id==='issues'?'<span class="navcount">'+issueList().filter(i=>i.status!=='已验证').length+'</span>':''}</a>`).join('');$('#breadcrumb').textContent=navLabel(navIds.indexOf(view));document.title=content.copy.title;$('meta[name="description"]')?.setAttribute('content',content.copy.description);if($('#site-footer'))$('#site-footer').textContent=content.copy.footer;carouselCleanup?.();carouselCleanup=undefined;$('#main').innerHTML=({overview,projects,evaluation,skills:skillsPage,issues,pipeline,plan}[view])();if(view==='overview')mountOverviewCarousel();}
 function modal(title,html){$('#dialog-title').textContent=title;$('#dialog-body').innerHTML=html;if(!$('#dialog').open)$('#dialog').showModal()}
 function metricHelp(){modal('指标口径 · 模拟数据',`<p>所有数字均为演示数据，不代表真实成果。当前演示采用以下建议口径：</p><div class="meta-row"><span>核心任务成功率</span>达标任务数 / 同一评测集任务数</div><div class="meta-row"><span>净节省人时</span>基线投入 − 业务线投入 − 基建投入</div><div class="meta-row"><span>有效使用覆盖率</span>已验收使用的交付 / 目标范围交付</div><div class="meta-row"><span>体验问题复发率</span>观察期内复发问题 / 已闭环问题</div><p style="margin-top:16px">示例：原方式1,000小时 − 业务线550小时 − 基建150小时 = 净节省300小时。仅在质量达标、范围及复杂度可比时确认收益。</p><p>实际目标及分母、观察周期，需业务线与经营团队确认。</p>`)}
 function scoreModal(id){let c=content.cases.find(x=>x.id===id);if(!c)return;let saved=state.scores[id];selectedScore=saved?.score||0;modal('专家评分 · '+esc(c.id),`<span class="chip">Navos v2.4 · 评测集 v1.2 · 模拟任务</span><h3 style="margin-top:14px">${esc(c.name)}</h3><label>任务要求</label><p>${esc(c.task)}</p><div class="case-output"><h3>示例产物</h3><p>${esc(c.output)}</p></div><label>评分标准</label><p>${esc(c.criteria)} 1分不满足，3分基本满足，5分可直接采用。</p><label>综合评分</label><div class="score-row">${[1,2,3,4,5].map(n=>`<button class="score ${selectedScore===n?'chosen':''}" aria-pressed="${selectedScore===n}" data-score="${n}">${n}</button>`).join('')}</div><label for="review-note">评语</label><textarea id="review-note" placeholder="说明主要依据、问题及改进建议">${esc(saved?.note||'')}</textarea><div id="score-error" class="error" role="alert"></div><div class="dialog-actions"><button class="btn primary" data-action="save-score" data-id="${esc(id)}">保存模拟评分</button></div>`)}
