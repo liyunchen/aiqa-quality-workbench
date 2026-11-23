@@ -5,7 +5,7 @@
     "heroHeading": "以更少的人力，持续交付更好的产品体验。",
     "heroDescription": "评测发现差距 · 基建提升效率 · 线上问题持续闭环",
     "monthly": {
-      "success": "82.6",
+      "success": "76.6",
       "savedHours": 186,
       "coverage": "58.3",
       "recurrence": "6.8"
@@ -18,7 +18,7 @@
     },
     "trend": {
       "success": [
-        74.2,
+        50,
         76.1,
         75.6,
         79.3,
