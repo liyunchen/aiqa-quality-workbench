@@ -8,7 +8,7 @@
       "success": "76.6",
       "savedHours": 186,
       "coverage": "58.3",
-      "recurrence": "6.8"
+      "recurrence": "3"
     },
     "weekly": {
       "success": "84.2",
@@ -49,7 +49,7 @@
       "name": "AI评测",
       "description": "明确业务效果与可靠性标准，识别产品能力差距。",
       "progress": 68,
-      "count": "19 道核心评测题",
+      "count": "18道核心评测题",
       "focus": "专家基准与版本回归",
       "view": "evaluation"
     },
