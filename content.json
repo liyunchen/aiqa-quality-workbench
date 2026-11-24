@@ -66,9 +66,9 @@
       "symbol": "◇",
       "name": "产品体验改善",
       "description": "追踪线上问题，推动产品研发完成可验证的改进。",
-      "progress": 57,
-      "count": "6 项演示问题",
-      "focus": "高频问题闭环",
+      "progress": 5,
+      "count": "50个存量体验问题",
+      "focus": "存量问题闭环",
       "view": "issues"
     }
   ],
