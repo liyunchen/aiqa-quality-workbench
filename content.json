@@ -411,11 +411,11 @@
       {
         "type": "text",
         "kicker": "AI EVALUATION",
-        "title": "用可信评测，看清每一次版本变化",
-        "description": "固定核心场景，统一专家评分，让版本对比有据可依。",
-        "label": "当前重点 / 版本评测",
-        "value": "AI / QA",
-        "caption": "固定场景 · 同口径对照"
+        "title": "业务专家测评火热进行中",
+        "description": "定义预期基准 · 运行结果打分 · 人机一致性对比",
+        "label": "",
+        "value": "",
+        "caption": ""
       },
       {
         "type": "text",
