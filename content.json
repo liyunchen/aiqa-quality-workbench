@@ -424,8 +424,16 @@
   },
   "evaluationMetrics": {
     "scenarios": {
-      "value": 19,
+      "value": 18,
       "url": "https://biu6ihvvco.feishu.cn/wiki/Wrk0w5YnniAOLXkYld2c2YGcnyd"
+    },
+    "scored": {
+      "value": 18,
+      "url": "https://biu6ihvvco.feishu.cn/wiki/POvcwUheEirwNzkptakcP4aVnxh"
+    },
+    "versions": {
+      "value": 1,
+      "url": ""
     }
   }
 }
