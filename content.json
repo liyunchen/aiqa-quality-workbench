@@ -420,11 +420,11 @@
       {
         "type": "text",
         "kicker": "EXPERIENCE LOOP",
-        "title": "让体验问题有反馈，也有结果",
-        "description": "收集线上问题、明确改进责任，修复之后再验证。",
-        "label": "当前重点 / 体验问题闭环",
-        "value": "发现 → 验证",
-        "caption": "线上反馈 · 修复后回归"
+        "title": "内部众测火热招募中",
+        "description": "第一时间试用 · 海量积分 · 有效反馈激励",
+        "label": "",
+        "value": "试用 → 反馈激励",
+        "caption": ""
       },
       {
         "type": "image",
