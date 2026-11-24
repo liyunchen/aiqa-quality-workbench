@@ -10,6 +10,7 @@
 .overview-carousel-slide>img{display:block;width:100%;height:100%;object-fit:contain}
 .overview-carousel-slide>img.cover{object-fit:cover}
 .overview-carousel-slide .hero{height:100%;margin:0;border-radius:0;padding-inline:clamp(24px,4vw,50px);box-sizing:border-box}
+.overview-carousel-slide .hero-text{display:grid;grid-template-columns:minmax(0,1fr) minmax(130px,25%);gap:20px;align-items:center}
 .overview-carousel-controls{position:absolute;inset:0;pointer-events:none;color:#fff;display:flex;align-items:flex-end;justify-content:center;gap:6px;padding:6px 9px}
 .overview-carousel-controls button{pointer-events:auto;cursor:pointer;color:#fff;border:0;font:inherit}
 .overview-carousel-controls button:focus-visible{outline:2px solid #fff;outline-offset:-3px}
@@ -26,6 +27,7 @@
 @media(max-width:700px){
   .overview-carousel-stage{min-height:0}
   .overview-carousel-slide .hero{min-height:0;padding:8px 13px;gap:8px}
+  .overview-carousel-slide .hero-text{grid-template-columns:minmax(0,1fr) auto;gap:8px}
   .overview-carousel-slide .hero h2{font-size:clamp(10px,2.2vw,16px);margin:2px 0}
   .overview-carousel-slide .hero p,.overview-carousel-slide .hero-tag,.overview-carousel-slide .hero-side small{display:none}
   .overview-carousel-slide .hero .eyebrow,.overview-carousel-slide .hero-side strong{font-size:9px}
@@ -40,6 +42,31 @@
   .carousel-dots button::before{background:#819a8d}
   .carousel-dots button[aria-current='true']::before{background:#28664f}
   .carousel-count,.overview-carousel-controls .carousel-pause{align-self:center}
+}
+.overview-carousel--text .overview-carousel-stage{aspect-ratio:auto;grid-template-rows:minmax(auto,1fr);min-height:clamp(156px,15vw,246px)}
+.overview-carousel--text .overview-carousel-slide[hidden]{display:block;visibility:hidden;pointer-events:none}
+.overview-carousel--text .overview-carousel-slide>img{position:absolute;inset:0}
+.overview-carousel--text .overview-carousel-slide{position:relative}
+.overview-carousel--text .hero{min-height:0;padding-block:18px}
+.overview-carousel--text .hero-text>div{min-width:0;overflow-wrap:anywhere}
+.overview-carousel--text .hero-text h2{line-height:1.3}
+.overview-carousel--text .hero-text p{white-space:pre-line}
+.overview-carousel--text .hero-text .hero-side{display:block;min-width:0;padding-left:0}
+.overview-carousel--text .overview-carousel-controls{position:static;pointer-events:auto;align-items:center;padding:4px 9px;background:#e9f0ea;color:#183f36}
+.overview-carousel--text .overview-carousel-controls button{color:#183f36}
+.overview-carousel--text .overview-carousel-controls button:focus-visible{outline-color:#183f36}
+.overview-carousel--text .carousel-step,.overview-carousel--text .carousel-pause,.overview-carousel--text .carousel-count,.overview-carousel--text .carousel-dots{background:transparent;align-self:center}
+.overview-carousel--text .carousel-step{position:static;transform:none;flex:none}
+.overview-carousel--text .carousel-step.next{order:2}.overview-carousel--text .carousel-count{order:3}.overview-carousel--text .carousel-pause{order:4}
+.overview-carousel--text .carousel-dots button::before{background:#819a8d}
+.overview-carousel--text .carousel-dots button[aria-current=true]::before{background:#28664f}
+@media(max-width:700px){
+  .overview-carousel--text .hero-text{grid-template-columns:minmax(0,1fr);padding:13px 16px;gap:7px}
+  .overview-carousel--text .hero-text h2{font-size:clamp(16px,4.6vw,21px);margin:2px 0}
+  .overview-carousel--text .hero-text p,.overview-carousel--text .hero-text .hero-tag,.overview-carousel--text .hero-text .hero-side small{display:block;font-size:11px}
+  .overview-carousel--text .hero-text .hero-tag{display:table;margin-top:5px}
+  .overview-carousel--text .hero-text .hero-side{display:flex;gap:8px;align-items:center;text-align:left}
+  .overview-carousel--text .hero-text .hero-side strong{font-size:16px;line-height:1.2}
 }
 @media(min-width:1600px){main{padding-top:42px}.hero{padding:35px}.metrics{gap:22px}.metric{padding:25px}}
 @media(max-width:1150px){.sidebar{width:207px;padding:26px 13px}.shell{margin-left:207px}main{padding:27px 25px}.topbar{padding:0 25px}.metric{padding:16px}.value{font-size:27px}.grid2{grid-template-columns:1.3fr 1fr}.skillgrid{grid-template-columns:repeat(2,1fr)}.track{padding:16px}.hero h2{font-size:21px}.hero-side{min-width:140px}}

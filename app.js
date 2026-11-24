@@ -53,19 +53,32 @@ function originalHero(){
   return `<section class="hero"><div><div class="eyebrow">ONE GOAL · THREE WORKSTREAMS</div><h2>${esc(content.overview.heroHeading)}</h2><p>${esc(content.overview.heroDescription)}</p><span class="hero-tag">当前阶段 / 试点验证与流程接入</span></div><div class="hero-side"><strong>3 / 1</strong><small>三条工作线 · 一个质量闭环</small></div></section>`;
 }
 
+function textHero(slide){
+  const kicker = typeof slide.kicker === 'string' ? slide.kicker.trim() : '';
+  const title = typeof slide.title === 'string' ? slide.title.trim() : '';
+  const description = typeof slide.description === 'string' ? slide.description.trim() : '';
+  const label = typeof slide.label === 'string' ? slide.label.trim() : '';
+  const value = typeof slide.value === 'string' ? slide.value.trim() : '';
+  const caption = typeof slide.caption === 'string' ? slide.caption.trim() : '';
+  return `<section class="hero hero-text"><div>${kicker ? `<div class="eyebrow">${esc(kicker)}</div>` : ''}<h2>${esc(title || '正在准备横幅…')}</h2>${description ? `<p>${esc(description)}</p>` : ''}${label ? `<span class="hero-tag">${esc(label)}</span>` : ''}</div>${value || caption ? `<div class="hero-side">${value ? `<strong>${esc(value)}</strong>` : ''}${caption ? `<small>${esc(caption)}</small>` : ''}</div>` : ''}</section>`;
+}
+
 let carouselCleanup;
 function carouselSlides(){
   const slides = content.carousel?.slides;
   if (!Array.isArray(slides)) return [];
-  return slides.filter(slide => slide?.type === 'original' || (slide?.type === 'image'
-    && typeof slide.src === 'string' && /^data:image\/webp;base64,[A-Za-z0-9+/]+={0,2}$/.test(slide.src)));
+  return slides.filter(slide => slide?.type === 'original'
+    || (slide?.type === 'text' && typeof slide.title === 'string' && slide.title.trim().length > 0
+      && ['kicker', 'description', 'label', 'value', 'caption'].every(key => typeof slide[key] === 'string'))
+    || (slide?.type === 'image' && typeof slide.src === 'string'
+      && /^data:image\/webp;base64,[A-Za-z0-9+/]+={0,2}$/.test(slide.src)));
 }
 
 function overviewHero(){
   const slides = carouselSlides();
   if (!slides.length || (slides.length === 1 && slides[0].type === 'original')) return originalHero();
   const hasControls = slides.length > 1;
-  return `<section class="overview-carousel" aria-label="首页横幅"${hasControls ? ' aria-roledescription="轮播" tabindex="0"' : ''}>
+  return `<section class="overview-carousel${slides.some(slide => slide.type === 'text') ? ' overview-carousel--text' : ''}" aria-label="首页横幅"${hasControls ? ' aria-roledescription="轮播" tabindex="0"' : ''}>
     <div class="overview-carousel-stage"></div>
     ${hasControls ? `<div class="overview-carousel-controls">
       <button class="carousel-step previous" type="button" data-step="-1" aria-label="上一张"><span aria-hidden="true">‹</span></button>
@@ -101,7 +114,10 @@ function mountOverviewCarousel(){
     card.className = 'overview-carousel-slide';
     card.hidden = true;
     if (slide.type === 'original') card.innerHTML = originalHero();
-    else {
+    else if (slide.type === 'text') {
+      card.innerHTML = textHero(slide);
+      card.setAttribute('aria-label', `${position + 1}：${slide.title}`);
+    } else {
       const image = new Image();
       image.alt = slide.alt || `第 ${position + 1} 张横幅`;
       image.decoding = 'async';
